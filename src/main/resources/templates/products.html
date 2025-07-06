@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script>
+	function changeQty(button, delta) {
+		const input = button.parentElement.querySelector('input[name]');
+		let value = parseInt(input.value) || 1;
+		value += delta;
+		if (value < 1)
+			value = 1;
+		input.value = value;
+	}
+
+	function validateInput(input) {
+		input.value = input.value.replace(/\D/g, '');
+		if (input.value === '' || parseInt(input.value) < 1) {
+			input.value = 1;
+		}
+	}
+	
+	  function validateForm() {
+	    const checkboxes = document.querySelectorAll('input[name="selectedIds"]:checked');
+	    if (checkboxes.length === 0) {
+	    	Swal.fire({
+	    		icon: 'warning',
+	    		title: '尚未選擇商品',
+	            text: '請至少勾選一樣商品再加入購物車！',
+	            confirmButtonText: '知道了'
+	    	});
+	      return false; // 阻止表單送出
+	    }
+	    return true;
+	  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+table {
+	width: 90%;
+	border-collapse: collapse;
+	margin: 20px auto;
+}
+
+th, td {
+	border: 1px solid #ccc;
+	padding: 12px;
+	text-align: center;
+}
+
+th {
+	background-color: #f2f2f2;
+}
+
+img {
+	width: 100px;
+}
+
+.quantity-control {
+	display: inline-flex;
+	align-items: center;
+}
+
+.quantity-control button {
+	width: 30px;
+	height: 30px;
+}
+
+.quantity-control input {
+	width: 50px;
+	text-align: center;
+}
+
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button
+	{
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
+.btn-home, .btn-submit {
+	display: inline-block;
+	padding: 10px 20px;
+	background-color: #007bff;
+	color: white;
+	text-decoration: none;
+	border-radius: 5px;
+	margin: 20px auto;
+}
+
+.btn-home:hover, .btn-submit:hover {
+	background-color: #0056b3;
+}
+
+.center {
+	text-align: center;
+}
+</style>
+<head>
+<meta charset="UTF-8">
+<title>商品列表</title>
+</head>
+<body>
+	<h1 style="text-align: center;">商品清單</h1>
+	<div style="text-align: center;">
+		<a href="/cart">查看購物車</a>
+	</div>
+	<form th:action="@{/cart/add-multiple}" method="post" onsubmit="return validateForm()">
+		<table>
+			<thead>
+				<tr>
+					<th>選取</th>
+					<th>圖片</th>
+					<th>商品名稱</th>
+					<th>描述</th>
+					<th>價格</th>
+					<th>請選擇數量</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="product : ${products}">
+					<td><input type="checkbox" name="selectedIds"
+						th:value="${product.id}" /></td>
+					<td><img th:src="${product.imageUrl}" alt="商品圖片" /></td>
+					<td th:text="${product.name}"></td>
+					<td th:text="${product.description}"></td>
+					<td th:text="${product.price}"></td>
+					<td>
+						<div class="quantity-control">
+							<button type="button" onclick="changeQty(this, -1)">-</button>
+							<input type="number" th:name="${'quantityMap[' + product.id + ']'}"
+								value="1" min="1" oninput="validateInput(this)" />
+							<button type="button" onclick="changeQty(this, 1)">+</button>
+						</div>
+					</td>
+			</tbody>
+		</table>
+		<div class="center">
+			<button type="submit" class="btn-submit">完成，加入購物車</button>
+		</div>
+	</form>
+
+
+	<div style="text-align: center;">
+		<a th:href="@{/}" class="btn-home"
+			style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+			回首頁</a>
+	</div>
+</body>
+</html>

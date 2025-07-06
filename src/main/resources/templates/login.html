@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>登入</title>
+</head>
+<body>
+	<h2>請登入</h2>
+	<form method="post" th:action="@{/login}">
+		<div>
+			<label>Email：</label>
+			<input type="text" name="username" />
+		</div>
+		<div>
+			<label>密碼：</label>
+			<input type="password" name="password" />
+		</div>
+		<div>
+			<button type="submit">登入</button>
+		</div>
+	</form>
+	<p>還沒有帳號？ <a th:href="@{/register}">點此註冊</a></p>
+	<p th:if="${param.error}">登入失敗，請重試</p>
+	<p th:if="${param.logout}">您已登出</p>
+</body>
+</html>

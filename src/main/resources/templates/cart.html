@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script>
+	function changeQty(button, delta) {
+		const input = button.parentElement.querySelector('input[name]');
+		let value = parseInt(input.value) || 1;
+		value += delta;
+		if (value < 1)
+			value = 1;
+		input.value = value;
+		button.closest("form").submit();
+	}
+
+	function validateInput(input) {
+		input.value = input.value.replace(/\D/g, '');
+		if (input.value === '' || parseInt(input.value) < 1) {
+			input.value = 1;
+		}
+		input.form.submit();
+	}
+</script>
+<style>
+table {
+	width: 90%;
+	border-collapse: collapse;
+	margin: 20px auto;
+}
+
+th, td {
+	border: 1px solid #ccc;
+	padding: 12px;
+	text-align: center;
+}
+
+th {
+	background-color: #f2f2f2;
+}
+
+img {
+	width: 100px;
+}
+
+.quantity-control {
+	display: inline-flex;
+	align-items: center;
+}
+
+.quantity-control button {
+	width: 30px;
+	height: 30px;
+}
+
+.quantity-control input {
+	width: 50px;
+	text-align: center;
+}
+
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button
+	{
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
+.btn-home, .btn-cart {
+	display: inline-block;
+	padding: 10px 20px;
+	background-color: #007bff;
+	color: white;
+	text-decoration: none;
+	border-radius: 5px;
+	margin: 10px;
+}
+
+.btn-home:hover, .btn-cart:hover {
+	background-color: #0056b3;
+}
+
+.center {
+	text-align: center;
+}
+</style>
+<head>
+<meta charset="UTF-8">
+<title>購物車</title>
+</head>
+<body>
+	<h1 class="center">您的購物車</h1>
+
+	<table>
+		<thead>
+			<tr>
+				<th>商品名稱</th>
+				<th>價格</th>
+				<th>數量</th>
+				<th>小計</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="item : ${cart.items}">
+				<td th:text="${item.name}">商品</td>
+				<td th:text="${#numbers.formatInteger(item.price, 0)}">0</td>
+				<td>
+					<form th:action="@{'/cart/update/' + ${item.productId}}"
+						method="post">
+						<div class="quantity-control">
+							<button type="button" onclick="changeQty(this, -1)">-</button>
+							<input type="number" name="quantity" th:value="${item.quantity}"
+								min="1" oninput="validateInput(this)" />
+							<button type="button" onclick="changeQty(this, 1)">+</button>
+						</div>
+					</form>
+				</td>
+				<td
+					th:text="${#numbers.formatInteger(item.price * item.quantity, 0)}"></td>
+				<td>
+					<form th:action="@{'/cart/remove/' + ${item.productId}}"
+						method="get">
+						<button th:href="@{'/cart/remove/' + ${item.productId}}">從購物車移除</button>
+					</form>
+				</td>
+
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<th colspan="4" style="text-align: center; font-weight: bold;">總金額：<span
+					th:text="${#numbers.formatInteger(cart.total, 0)}"></span></th>
+				<th colspan="1" style="text-align: center;"><a
+					th:href="@{/cart/checkout}" class="btn-home">前往結帳</a></th>
+			</tr>
+
+
+		</tfoot>
+		<div class="center">
+			<div style="margin-top: 20px;">
+				<a href="/products">回到商品頁面</a>
+			</div>
+			<a th:href="@{/}" class="btn-home">回首頁</a>
+		</div>
+	</table>
+	<!-- 
+	<div class="center">
+		<p>
+			總金額：<span th:text="${#numbers.formatInteger(cart.total, 0)}"></span>
+		</p>
+		<a href="/cart/checkout" class="btn-cart">前往結帳</a>
+		<div style="margin-top: 20px;">
+			<a href="/products">回到商品頁面</a>
+		</div>
+		<a th:href="@{/}" class="btn-home">回首頁</a>
+	</div>
+	 -->
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>結帳成功</title>
+<style>
+body {
+	font-family: Arial, sans-serif;
+	text-align: center;
+	padding-top: 50px;
+}
+
+h1 {
+	color: green;
+}
+
+a {
+	display: inline-block;
+	margin-top: 20px;
+	padding: 10px 20px;
+	background-color: #4CAF50;
+	color: white;
+	text-decoration: none;
+	border-radius: 5px;
+}
+
+a:hover {
+	background-color: #45a049;
+}
+</style>
+</head>
+<body>
+	<h1>✅ 感謝您的購買！</h1>
+	<p>您的訂單已成功結帳，我們將盡快為您出貨。</p>
+	<a th:href="@{/products}">回到商品頁</a>
+	<a th:href="@{/}" style="margin-left: 10px;">回首頁</a>
+</body>
+</html>
