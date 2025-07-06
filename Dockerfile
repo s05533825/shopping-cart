@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . /app
 
-RUN mvn clean package -DskipTests
+RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
 CMD ["java", "-jar", "target/ShoppingCartDemo-0.0.1-SNAPSHOT.jar"]
